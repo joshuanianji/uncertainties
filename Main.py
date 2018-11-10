@@ -2,6 +2,10 @@ import math
 from Values import Values
 from Uncertainties import *
 
+# {
+#     "python.pythonPath": "/usr/local/bin/python3"
+# }
+
 # Universal
 mass_water = scale(Values(100, 0.5), 0.001)
 mass_washer = scale(Values(5.56, 0.005), 0.001)

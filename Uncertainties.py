@@ -31,7 +31,7 @@ def simple(oper, val1, val2):
 
 
 def power(val1, n):
-    actual = val1.actual ** n
+    actual = pow(val1.actual, n)
     uncertainty = n * val1.absolute_unc
     return Values(actual, uncertainty)
 

@@ -2,6 +2,7 @@ import math
 from Values import Values
 from Uncertainties import *
 
+
 # Universal
 mass_water = scale(Values(100, 0.5), 0.001)
 mass_washer = scale(Values(5.56, 0.005), 0.001)
@@ -14,6 +15,7 @@ heat_capacity_water = Values(4200, 20)  # joules per kilogram celsius
 # trial 1
 t_initial_water_1 = Values(21.7, 0.5)
 t_final_water_1 = Values(22.5, 0.5)
+
 
 delta_t_1 = subtract(t_final_water_1, t_initial_water_1)
 # print("del t: " + delta_t_1.output_absolute())

@@ -4,6 +4,9 @@ class Values:
         self.absolute_unc = absolute_unc
         self.percent_unc = abs(absolute_unc / actual)
 
+    def output_self(self):
+        return str("Values(" + str(self.actual) + "," + str(self.absolute_unc) + ")")
+
     def output_absolute(self):
         return (str(self.actual) + " ± " + str(self.absolute_unc))
 

@@ -5,14 +5,9 @@ from Uncertainties import *
 
 def is_Values(str_operand):
     try:
-        print(str_operand + " is a Value(). It equals " +
-              eval(str_operand) + ".output_absolute()")
+        operand_value = eval(str_operand + ".output_absolute()")
         return True
-    except Exception as e:
-        # print(str_operand)
-        # print(str_operand + " is not a Value(). Throwing exception: " + str(e))
-        print((str_operand) +
-              " is not a Value().")
+    except:
         return False
 
 
@@ -76,31 +71,37 @@ def eval_two(str_in):
     # operand_one - gets everything before operation
     operand_one = str_in.split(oper)[0].strip()
 
-    # opernad two - everything after operation
+    # operand two - everything after operation
     operand_two = str_in.split(oper)[1].strip()
 
-    # checking to see is a value is a Value type (has an uncertainty)
-
     def evaluate_operation(function, oper_one, oper_two):
-        return eval(function + "(" + str(oper_one) + "," + str(oper_two) + ")")
+        ans = eval(function + "(" + str(oper_one) + "," + str(oper_two) + ")")
+        return ans.output_self()
 
+    # checking to see is a value is a Value type (has an uncertainty)
     if is_Values(operand_one) and is_Values(operand_two):
         try:
             ans = evaluate_operation(
                 char_to_oper[oper], operand_one, operand_two)
             return ans
         except Exception as e:
-            return "Maybe not implemented yet. Threw error " + e + "when evaluating the two Values " + operand_one + " and " + operand_two
+            print("Maybe not implemented yet. Threw error '" + str(e) + "' when evaluating the two Values: " +
+                  operand_one + " and " + operand_two + ". This is on line 88.")
 
     elif is_Values(operand_one) and (not is_Values(operand_two)):
         # operand one is a Value, operand two is a number
+        ac_operand_one = eval(operand_one + ".actual")
+        unc_operand_one = eval(operand_one + ".absolute_unc")
         f_operand_two = float(operand_two)
+
         if oper == '+':
-            new_actual = operand_one.actual + f_operand_two
-            return eval("Values(" + new_actual + "," + operand_one.absolute_unc + ")")
+            new_actual = ac_operand_one + f_operand_two
+            sum = eval("Values(" + str(new_actual) +
+                       "," + str(unc_operand_one) + ")")
+            return sum.output_self()
         elif oper == '-':
-            new_actual = operand_one.actual - f_operand_two
-            return eval("Values(" + new_actual + "," + operand_one.absolute_unc + ")")
+            new_actual = ac_operand_one - f_operand_two
+            return eval("Values(" + str(new_actual) + "," + str(unc_operand_one) + ")")
         elif oper == '*':
             return evaluate_operation("scale", operand_one, f_operand_two)
         elif oper == '/':
@@ -108,27 +109,34 @@ def eval_two(str_in):
         elif oper == '^':
             return evaluate_operation("power", operand_one, f_operand_two)
         else:
-            print("operation not supported or not found.")
+            print("Operation '" + oper +
+                  "' not supported or not found on line 1112")
 
     elif (not is_Values(operand_one)) and is_Values(operand_two):
         # operand one is a number, operand two is a Value
+        ac_operand_two = eval(operand_two + ".actual")
+        unc_operand_two = eval(operand_two + ".absolute_unc")
         f_operand_one = float(operand_one)
+
         if oper == '+':
-            new_actual = f_operand_one + operand_two.actual
-            return eval("Values(" + new_actual + "," + operand_two.absolute_unc + ")")
+            new_actual = f_operand_one + ac_operand_two
+            return eval("Values(" + str(new_actual) + "," + str(unc_operand_two) + ")")
         elif oper == '-':
-            new_actual = f_operand_one - operand_two.actual
-            return eval("Values(" + new_actual + "," + operand_two.absolute_unc + ")")
+            new_actual = f_operand_one - ac_operand_two
+            return eval("Values(" + str(new_actual) + "," + str(unc_operand_two) + ")")
         elif oper == '*':
             return evaluate_operation("scale", operand_two, f_operand_one)
         elif oper == '/':
             return evaluate_operation("scale", operand_two, (1 / f_operand_one))
         else:
-            return "error when trying " + oper + " on " + operand_one + " and " + operand_two
+            return "error when trying " + oper + " on " + operand_one + " and " + operand_two + " on line 131."
 
     else:
         # both are numbers
-        return eval(operand_one + oper + operand_two)
+        if oper in "+-*/":
+            return str(eval(operand_one + oper + operand_two))
+        elif oper == "^":
+            return str(eval(operand_one + "**" + operand_two))
 
 
 def split_expression(str_in):
@@ -146,6 +154,26 @@ def split_expression(str_in):
         final_str = str(eval_str_1) + first_oper + str(eval_str_2)
         return eval_two(final_str)
 
+# if it's a number return the number. if it's a Value return its output_absolute() function.
 
-test_string = "Values(20, 0.1) / 2 + Values(10, 0.3)"
-print(split_expression(test_string).output_absolute())
+
+def return_answer(thingy):
+    if is_Values(thingy):
+        return eval(thingy + ".output_absolute()")
+    else:
+        return thingy
+
+
+def eval_selected(string):
+    return eval(split_expression(string) + ".output_self()")
+
+
+m = "Values(100, 0.5)"
+c = "Values(4200, 20)"
+t = eval_selected("Values(22.5, 0.5) - Values(21.7, 0.5)")
+
+test_string = m + "/ 1000" + " * " + c + " * " + t
+
+result = split_expression(test_string)
+
+print(return_answer(result))

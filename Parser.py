@@ -120,10 +120,10 @@ def eval_two(str_in):
 
         if oper == '+':
             new_actual = f_operand_one + ac_operand_two
-            return eval("Values(" + str(new_actual) + "," + str(unc_operand_two) + ")")
+            return eval("Values(" + str(new_actual) + "," + str(unc_operand_two) + ")").output_self()
         elif oper == '-':
             new_actual = f_operand_one - ac_operand_two
-            return eval("Values(" + str(new_actual) + "," + str(unc_operand_two) + ")")
+            return eval("Values(" + str(new_actual) + "," + str(unc_operand_two) + ")").output_self()
         elif oper == '*':
             return evaluate_operation("scale", operand_two, f_operand_one)
         elif oper == '/':
@@ -147,16 +147,37 @@ def split_expression(str_in):
         # placeholder
         return eval_two(str_in)
     else:
-        # splitting on the last occurence (rplit() is like reverse split)
-        split_expression_array = str_in.rsplit(first_oper, 1)
-        eval_str_1 = split_expression(split_expression_array[0].strip())
-        eval_str_2 = split_expression(split_expression_array[1].strip())
-        final_str = str(eval_str_1) + first_oper + str(eval_str_2)
-        return eval_two(final_str)
+
+        # helper functions to find things inside brackets
+        def inside_brackets(string_in_thingy):
+            before_first_bracket = string_in_thingy.split('[')[0].strip()
+            after_second_bracket = string_in_thingy.split(']')[1].strip()
+
+            after_first_bracket = string_in_thingy.split('[')[1].strip()
+            inside_bracket_string = after_first_bracket.split(']')[0].strip()
+
+            return [before_first_bracket, inside_bracket_string, after_second_bracket]
+
+        # checking if the string contains brackets
+        contains_brackets = False
+        for ch in str_in:
+            if ch in "[":
+                contains_brackets = True
+
+        if contains_brackets:
+            expression_list = inside_brackets(str_in)
+            # run split_expression for the stuff inside the brackets - just
+            return split_expression(expression_list[0] + split_expression(expression_list[1]) + expression_list[2])
+        else:
+            # splitting on the last occurence (rplit() is like reverse split)
+            split_expression_array = str_in.rsplit(first_oper, 1)
+            eval_str_1 = split_expression(split_expression_array[0].strip())
+            eval_str_2 = split_expression(split_expression_array[1].strip())
+            final_str = str(eval_str_1) + first_oper + str(eval_str_2)
+            return eval_two(final_str)
+
 
 # if it's a number return the number. if it's a Value return its output_absolute() function.
-
-
 def return_answer(thingy):
     if is_Values(thingy):
         return eval(thingy + ".output_absolute()")
@@ -164,15 +185,12 @@ def return_answer(thingy):
         return thingy
 
 
+# returns the answer as Values(a, b) in a string
 def eval_selected(string):
     return eval(split_expression(string) + ".output_self()")
 
 
-m = "Values(100, 0.5)"
-c = "Values(4200, 20)"
-t = eval_selected("Values(22.5, 0.5) - Values(21.7, 0.5)")
-
-test_string = m + "/ 1000" + " * " + c + " * " + t
+test_string = "[3 + 2 - 7] / 2 + Values(3, 4)"
 
 result = split_expression(test_string)
 

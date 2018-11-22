@@ -3,31 +3,35 @@ import math
 
 
 def add(val1, val2):
-    return simple('+', val1, val2)
+    actual = val1.actual + val2.actual
+    absolute = val1.absolute_unc + val2.absolute_unc
+    return Values(actual, absolute)
 
 
 def subtract(val1, val2):
-    return simple('-', val1, val2)
+    actual = val1.actual - val2.actual
+    absolute = val1.absolute_unc + val2.absolute_unc
+    return Values(actual, absolute)
 
 
 def multiply(val1, val2):
+    # dz = (dx*y+dy*x)s
     actual = val1.actual * val2.actual
-    # absolute = abs(val1.actual * val2.absolute_unc) + \
-    #     abs(val2.actual * val1.absolute_unc)
-    absolute = abs(actual) * (val1.percent_unc + val2.percent_unc)
+    absolute = abs(val1.absolute_unc * val2.actual) + \
+        abs(val2.absolute_unc * val1.actual)
     return Values(actual, absolute)
 
 
 def divide(val1, val2):
-    actual = val1.actual / val2.actual
-    absolute = abs(actual) * (val1.percent_unc + val2.percent_unc)
-    return Values(actual, absolute)
-
-
-def simple(oper, val1, val2):
-    actual = eval(str(val1.actual) + oper + str(val2.actual))
-    absolute_unc = abs(val1.absolute_unc + val2.absolute_unc)
-    return Values(actual, absolute_unc)
+    if val2.actual != 0:
+        actual = val1.actual / val2.actual
+        absolute = abs(val1.absolute_unc / val2.actual) + \
+            abs(val2.absolute_unc * val1.actual / pow(val2.actual, 2))
+        return Values(actual, absolute)
+    else:
+        print("trying to divide by zero! " + "Values 1: " +
+              val1.output_self() + "Values 2: " + val2.output_self())
+        return "Failure to divide by zero. Please see console."
 
 
 def power(val1, n):

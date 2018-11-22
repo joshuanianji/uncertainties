@@ -10,6 +10,8 @@ def is_Values(str_operand):
     except:
         return False
 
+# finds the lowest operation used and returns it
+
 
 def lowest_operation(str_in):
 
@@ -139,6 +141,7 @@ def eval_two(str_in):
             return str(eval(operand_one + "**" + operand_two))
 
 
+# splits the expression into the array that can be evaluated later. Also evaluates them so lol
 def split_expression(str_in):
     first_oper = lowest_operation(str_in)
     if first_oper == "zero":
@@ -178,9 +181,12 @@ def split_expression(str_in):
 
 
 # if it's a number return the number. if it's a Value return its output_absolute() function.
-def return_answer(thingy):
+def return_answer(thingy, output_absolute_choice=True):
     if is_Values(thingy):
-        return eval(thingy + ".output_absolute()")
+        if output_absolute_choice:
+            return eval(thingy + ".output_absolute()")
+        else:
+            return eval(thingy + ".output_relative()")
     else:
         return thingy
 
@@ -194,4 +200,4 @@ test_string = "[3 + 2 - 7] / 2 + Values(3, 4)"
 
 result = split_expression(test_string)
 
-print(return_answer(result))
+print(return_answer(result, False))

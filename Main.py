@@ -25,7 +25,7 @@ mass_test = multiply(mass_water, heat_capacity_water)
 
 q_water_1 = multiply(mass_test, delta_t_1)
 
-print("Q1: " + q_water_1.output_absolute())
+# print("Q1: " + q_water_1.output_self())
 
 
 # trial 2
@@ -40,7 +40,7 @@ mass_test = multiply(mass_water, heat_capacity_water)
 
 q_water_2 = multiply(mass_test, delta_t_2)
 
-print("Q2: " + q_water_2.output_absolute())
+# print("Q2: " + q_water_2.output_self())
 
 
 # HEAT CAPACITIES OF WASHER
@@ -48,14 +48,14 @@ print("Q2: " + q_water_2.output_absolute())
 # trial 1
 delta_t_washer_1 = subtract(Values(100, 0.5), t_final_water_1)
 c_washer_1 = divide(divide(q_water_1, mass_washer), delta_t_washer_1)
-print("C of washer (trial 1): " + c_washer_1.output_absolute())
+# print("C of washer (trial 1): " + c_washer_1.output_absolute())
 
 # trial 2
 delta_t_washer_2 = subtract(Values(100, 0.5), t_final_water_2)
 c_washer_2 = divide(divide(q_water_2, mass_washer), delta_t_washer_2)
-print("C of washer (trial 2): " + c_washer_2.output_absolute())
+# print("C of washer (trial 2): " + c_washer_2.output_absolute())
 
 # average
 c_washer_avg = average(c_washer_1, c_washer_2)
-print("percent error of c washer: " + c_washer_avg.output_relative())
-print("average c of washer: " + c_washer_avg.output_absolute())
+# print("percent error of c washer: " + c_washer_avg.output_relative())
+# print("average c of washer: " + c_washer_avg.output_absolute())

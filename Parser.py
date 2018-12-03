@@ -100,17 +100,20 @@ def solve_simple(tuple_in):
                 return ans
         elif operand2_type == "Values":
             result = Values_and_number(operand2, operand1, oper)
-            variables[str_operand2] = result
-            return str_operand2
+            result_str = result.output_absolute()
+            variables[result_str] = result
+            return result_str
     elif operand1_type == "Values":
         if operand2_type == "float" or operand2_type == "int":
             result = Values_and_number(operand1, operand2, oper)
-            variables[str_operand1] = result
-            return str_operand1
+            result_str = result.output_absolute()
+            variables[result_str] = result
+            return result_str
         elif operand2_type == "Values":
             result = char_to_oper[oper](operand1, operand2)
-            variables[str_operand1] = result
-            return str_operand1
+            result_str = result.output_absolute()
+            variables[result_str] = result
+            return result_str
             
 
 def simplify(tuple_in):
@@ -141,3 +144,7 @@ variables = {
 
 input_tuple = ([(["m1","v"],"*"), "m1"], "+")
 print(variables[simplify(input_tuple)].output_absolute())
+#Here's how a tuple is made:
+#"m + m * v"
+#([m * v, m], "+")
+#([(["m", "v"], "*"), "m"], "+")

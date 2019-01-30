@@ -142,7 +142,7 @@ def eval_two(str_in):
 
 
 # splits the expression into the array that can be evaluated later. Also evaluates them so lol
-def split_expression(str_in):
+def eval_expression(str_in):
     first_oper = lowest_operation(str_in)
     if first_oper == "zero":
         return str_in
@@ -169,13 +169,13 @@ def split_expression(str_in):
 
         if contains_brackets:
             expression_list = inside_brackets(str_in)
-            # run split_expression for the stuff inside the brackets - just
-            return split_expression(expression_list[0] + split_expression(expression_list[1]) + expression_list[2])
+            # run eval_expression for the stuff inside the brackets - just
+            return eval_expression(expression_list[0] + eval_expression(expression_list[1]) + expression_list[2])
         else:
             # splitting on the last occurence (rplit() is like reverse split)
-            split_expression_array = str_in.rsplit(first_oper, 1)
-            eval_str_1 = split_expression(split_expression_array[0].strip())
-            eval_str_2 = split_expression(split_expression_array[1].strip())
+            eval_expression_array = str_in.rsplit(first_oper, 1)
+            eval_str_1 = eval_expression(eval_expression_array[0].strip())
+            eval_str_2 = eval_expression(eval_expression_array[1].strip())
             final_str = str(eval_str_1) + first_oper + str(eval_str_2)
             return eval_two(final_str)
 
@@ -193,11 +193,11 @@ def return_answer(thingy, output_absolute_choice=True):
 
 # returns the answer as Values(a, b) in a string
 def eval_selected(string):
-    return eval(split_expression(string) + ".output_self()")
+    return eval(eval_expression(string) + ".output_self()")
 
 
 test_string = "[3 + 2 - 7] / 2 + Values(3, 4)"
 
-result = split_expression(test_string)
+result = eval_expression(test_string)
 
 print(return_answer(result, False))
